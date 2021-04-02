@@ -3,7 +3,7 @@
 Bachelor thesis project "AUTOMATED MORPHOLOGICAL ANALYSIS OF LASER-INDUCED DAMAGE:
 INVESTIGATION OF FATIGUE EFFECT IN ZRO2 OPTICAL COATING" at Vilnius University, 2018.
 
-** Note: NO examples are provided **
+** Note: no examples are provided which are required for the application. **
 
 ## Directory content
 * image_processing - application for feature extraction from LIDT images.
@@ -52,20 +52,21 @@ LICENSE
 README.md
 cv_372.yml
 ```
-
+## Usage
 #### Create Anaconda environment
 Use the conda environment file **cv_372.yml** to install the required **cv_372** environment and its modules.
 
 ```bash
 conda env create -f cv_372.yml
 ```
-
-Activate `cv_372` conda environment and run one of the `main.py` files:
+Activate `cv_372` conda environment:
 ```bash
 conda activate experiments
+```
+
+#### Run one of the applications
+Navigate to one of the applications and run `main.py` files:
+```bash
 cd image_processing
 python main.py
 ```
-
-** Note: application requires certain files, images and folder structure which is not provided **
-
