@@ -7,9 +7,12 @@ Details regarding the implementation, usage and capabilities of applications in 
 
 ** Note: no examples are provided which are required for the applications. **
 
+![Alt text](gui_image.png?raw=true "Title")
+
 ## Directory content
 * image_processing - application for feature extraction from LIDT images.
 * image_classification  - application for classification of extracted features from LIDT images.
+
 
 ## Directory tree
 ```bash
