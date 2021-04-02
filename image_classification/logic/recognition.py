@@ -1,16 +1,19 @@
-from mpl_toolkits.mplot3d import Axes3D
-import sklearn.cluster
-import sklearn.metrics
+import os
+import errno
+import warnings
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+
+
 import skimage.io
-import matplotlib.gridspec as gridspec
-import os
 import sklearn.preprocessing
 import sklearn.decomposition
-import errno
-import warnings
+import sklearn.cluster
+import sklearn.metrics
+import matplotlib.gridspec as gridspec
+from mpl_toolkits.mplot3d import Axes3D
+
 
 def show_pics(train_pca, best_classifier, objects, directory_cropped_image):
 
@@ -66,6 +69,25 @@ def show_pics(train_pca, best_classifier, objects, directory_cropped_image):
 
 def k_means_code(train_pca, objects, directory_cropped_image, directory_image,
                  TwoD=True, ThreeD=False, silhouette_threshold=0.48, force=False, k_number=10):
+    '''
+    K-means clustering after PCA analysis
+    Parameters
+    ----------
+    train_pca: input data
+    objects: DataFrame of objects of interest
+    directory_cropped_image: path to cropped images directory
+    directory_image: path to image directory
+    TwoD:  if True, plot clustering in 2D
+    ThreeD: if True, plot clustering in 3D
+    silhouette_threshold
+    force: if True, use clusters through silhouette method
+    k_number: number of clusters in K-means
+
+    Returns
+    -------
+    objects: DataFrame with added labels
+    '''
+
     k_min = 2
     k_max = 5
 
@@ -126,7 +148,6 @@ def k_means_code(train_pca, objects, directory_cropped_image, directory_image,
             plt.title("KMeans Clustering")
             plt.imshow(img)
 
-            # img = skimage.io.imread("/Users/macbook/Desktop/D6_COPY/Site{}.jpg".format(str(int(all_objects.iloc[object_id]['site nr']))))
             img = skimage.io.imread(
                 "{}site{}.jpg".format(directory_image, str(int(objects.iloc[object_id]['site nr']))))
 
@@ -136,6 +157,7 @@ def k_means_code(train_pca, objects, directory_cropped_image, directory_image,
             plt.imshow(img)
 
     return objects
+
 
 def PCA(X_train, plot=False):
 
@@ -177,7 +199,22 @@ def PCA(X_train, plot=False):
 
     return X_train_pca,pca2.components_,pca2.explained_variance_ratio_
 
+
 def spectral_clustering(train_pca, objects, directory_cropped_image, directory_image,  cluster_num=3):
+    '''
+    Perform spectral clustering on input.
+    Parameters
+    ----------
+    train_pca: input data
+    objects: DataFrame containing object information
+    directory_cropped_image: path to directory cropped images are located
+    directory_image: path to directory where original images are located
+    cluster_num: initial number of clusters
+
+    Returns
+    -------
+    objects: DataFrame with added labels
+    '''
 
     best_classifier = sklearn.cluster.SpectralClustering(n_clusters=cluster_num, eigen_solver='arpack',
                                                          affinity="nearest_neighbors").fit(train_pca)
@@ -236,6 +273,21 @@ def spectral_clustering(train_pca, objects, directory_cropped_image, directory_i
 
 
 def mean_shift(train_pca, objects, directory_cropped_image, directory_image, quant=0.20, k_number=10):
+    '''
+    Mean shift clustering implementation.
+    Parameters
+    ----------
+    train_pca: input data
+    objects: DataFrame containing object information
+    directory_cropped_image: directory where cropped images are located
+    directory_image: directory where original images are located
+    quant: mean shift internal parameter
+    k_number: number of initial clusters
+
+    Returns
+    -------
+    objects: DataFrame with object labels
+    '''
 
     # The following bandwidth can be automatically detected using
     bandwidth = sklearn.cluster.estimate_bandwidth(train_pca, quantile=quant, n_samples=500)
@@ -300,6 +352,19 @@ def mean_shift(train_pca, objects, directory_cropped_image, directory_image, qua
 
 
 def DBSCAN_get_outliers(train_pca, objects, eps=1.6, min_samples = 3):
+    '''
+    DBSCAN clustering implementation.
+    Parameters
+    ----------
+    train_pca: input data
+    objects: DataFrame with object information
+    eps: DBSCAN internal parameter
+    min_samples: DBSCAN internal parameter
+
+    Returns
+    -------
+    objects: DataFrame containing given labels
+    '''
 
     best_classifier = sklearn.cluster.DBSCAN(eps=eps, min_samples=min_samples, metric='euclidean').fit(train_pca)
     objects['PCA labels'] = best_classifier.labels_
@@ -323,7 +388,9 @@ def DBSCAN_get_outliers(train_pca, objects, eps=1.6, min_samples = 3):
 
     return outliers_index, objects, outliers_address
 
+
 def DBSCAN_show_outliers(train_pca, objects, directory_cropped_image, directory_image, eps=1.6, min_samples = 3, plot=False):
+    '''  Plot DBSCAN outliers. '''
 
      best_classifier = sklearn.cluster.DBSCAN(eps=eps, min_samples=min_samples,metric='euclidean').fit(train_pca)
      objects['PCA labels'] = best_classifier.labels_
@@ -362,8 +429,9 @@ def DBSCAN_show_outliers(train_pca, objects, directory_cropped_image, directory_
 
      return outliers_sites_nr, objects
 
+
 def DBSCAN_label_outliers(outliers_sites, objects, damaged_outliers):
-    # Put indexes(from 0) of outliers, which actually are demages
+    ''' Evaluate if DBSCAN outliers are actual damages.'''
 
     damaged_outliers_real_idx = [outliers_sites[i] for i in damaged_outliers]
     label_num = np.unique(objects['PCA labels'])[-1]
@@ -382,7 +450,6 @@ def DBSCAN_label_outliers(outliers_sites, objects, damaged_outliers):
     elif (len(outliers_sites) == len(damaged_outliers)):
 
         # Case 2: All outliers are marked as damaged
-
         for i in outliers_sites:
             objects.loc[int(i), 'PCA labels'] = label_num + 1
     else:
@@ -396,7 +463,9 @@ def DBSCAN_label_outliers(outliers_sites, objects, damaged_outliers):
 
     return objects
 
+
 def updated_DBSCAN_clustering(train_pca, objects, k_number=5):
+    ''' Redo DBSCAN clustering. '''
 
     points = pd.DataFrame(train_pca)
     points['Labels'] = list(objects['PCA labels'])
@@ -408,7 +477,6 @@ def updated_DBSCAN_clustering(train_pca, objects, k_number=5):
     # We can add +1 to all points['Labels'] elements and later subtract 1.
 
     if -1 in list(points['Labels'].value_counts().index):
-
         points['Labels'] += 1
         a = train_pca
         b = centroids[points['Labels']]
@@ -445,11 +513,13 @@ def updated_DBSCAN_clustering(train_pca, objects, k_number=5):
     return objects, similar_pics_idx, smallest_cluster_size
 
 def DBSCAN_clustering(train_pca, objects, directory_cropped_image, directory_image, k_number=5):
+    ''' Perform DBSCAN clustering. '''
+
     points = pd.DataFrame(train_pca)
     points['Labels'] = list(objects['PCA labels'])
     centroids = np.array([(points.loc[points['Labels'] == i].mean(axis=0)[:-1]) for i in (list(np.unique(objects['PCA labels'])))])
 
-    ## if all outliers are damages, 7->6, nes priespaskutinis skirtas siukslems.
+    ## if all outliers are damages, 7->6, nes the one before last is for trashes
     start, end = np.unique(objects['PCA labels'])[0], np.unique(objects['PCA labels'])[-1]
     L = list(range(start, end + 1, 1))
     missing_element = sorted(set(range(start, end + 1)).difference(np.unique(objects['PCA labels'])))
@@ -548,7 +618,10 @@ def eq_hist_check(all_objects_eq_hist, excel_file, radius, unwanted_features=['U
         X_train_std = sc.fit_transform(X_train.values)
         return X_train_std, all_objects_eq_hist
 
+
 def saving_cluster(all_objects, directory_cropped_image):
+    ''' Create directory to save objects wrt the given class by clustering algorithm. '''
+
     warnings.filterwarnings("ignore")
     directory_save_cluster = os.path.join(directory_cropped_image,'Cluster')
 
@@ -561,14 +634,3 @@ def saving_cluster(all_objects, directory_cropped_image):
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
-
-        #rows = all_objects.loc[all_objects['PCA labels'] == (i)]
-        #site_nr = list(rows['site nr'])
-        #img_nr = list(rows['Object in image nr'])
-
-        #for img in range(len(site_nr)):
-        #    site = str(site_nr[img]) + '_' + str(int(img_nr[img]))
-        #    img = skimage.io.imread(directory_cropped_image + "cropped_site{}.png".format(site))
-
-        #    skimage.io.imsave(directory_save_cluster_cluster + 'cropped_site%s.png' % (site), img)
-
