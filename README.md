@@ -5,7 +5,7 @@ INVESTIGATION OF FATIGUE EFFECT IN ZRO2 OPTICAL COATING" at Vilnius University, 
 
 Details regarding the implementation, usage and capabilities of applications in this directory can be accessed [here](https://docs.google.com/presentation/d/1SBlaLdjNwfMvd1MDDXGLrlrlZgE0Cdfuq1SQTEXR7vo/edit?usp=sharing) (in lithuanian).
 
-** Note: no examples are provided which are required for the applications. **
+** Note: Applications require examples which are not provided. **
 
 ![Alt text](gui_image.png?raw=true "Title")
 
