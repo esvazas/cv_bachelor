@@ -11,8 +11,13 @@ Details regarding the implementation, usage and capabilities of applications in 
 
 ## Directory content
 * image_processing - application for feature extraction from LIDT images.
+  ** gui - directory containing user interface files (PyQt5)
+  ** logic - directory containing image processing functions
+  ** main.py - main application file
 * image_classification  - application for classification of extracted features from LIDT images.
-
+  ** gui - directory containing user interface files (PyQt5)
+  ** logic - directory containing image classification functions
+  ** main.py - main application file
 
 ## Directory tree
 ```bash
