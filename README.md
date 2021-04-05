@@ -66,7 +66,7 @@ conda env create -f cv_372.yml
 ```
 Activate `cv_372` conda environment:
 ```bash
-conda activate experiments
+conda activate cv_372
 ```
 
 #### Run one of the applications
