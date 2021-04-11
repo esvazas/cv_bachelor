@@ -3,9 +3,9 @@
 Bachelor thesis project "AUTOMATED MORPHOLOGICAL ANALYSIS OF LASER-INDUCED DAMAGE:
 INVESTIGATION OF FATIGUE EFFECT IN ZRO2 OPTICAL COATING" at Vilnius University, 2018.
 
-Details regarding the implementation, usage and capabilities of applications in this directory can be accessed [here](https://docs.google.com/presentation/d/1SBlaLdjNwfMvd1MDDXGLrlrlZgE0Cdfuq1SQTEXR7vo/edit?usp=sharing) (in lithuanian).
+Details regarding the implementation, usage and capabilities of applications in this directory can be accessed [here](https://docs.google.com/presentation/d/1SBlaLdjNwfMvd1MDDXGLrlrlZgE0Cdfuq1SQTEXR7vo/edit?usp=sharing) (in Lithuanian).
 
-** Note: Applications require examples which are not provided. **
+** Note: Applications require examples that are not provided. **
 
 ![Alt text](gui_image.png?raw=true "Title")
 
